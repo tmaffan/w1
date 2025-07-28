@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Royal Sherwani Bill Capture</title>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            padding: 15px;
+            max-width: 100%;
+            margin: 0 auto;
+            background-color: #f5f5f5;
+        }
+        #cameraContainer {
+            width: 90%;
+            max-width: 500px;
+            margin: 15px auto;
+            position: relative;
+        }
+        #cameraView {
+            width: 100%;
+            height: auto;
+            max-height: 60vh;
+            background: #000;
+            display: none;
+            border-radius: 8px;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            margin: 10px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #photoResult, #sharePhotoResult {
+            max-width: 90%;
+            display: none;
+            margin: 15px auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: #000;
+        }
+        #billInput, #deliveryDate, #salesmanSelect {
+            padding: 10px;
+            font-size: 16px;
+            width: 200px;
+            margin: 10px;
+            display: none;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .controls {
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #startBtn, #uploadBtn, #confirmDateBtn, #captureBtn, 
+        #takeWithMeasurementBtn, #uploadWithMeasurementBtn {
+            background: #4CAF50;
+        }
+        #switchBtn {
+            background: #2196F3;
+        }
+        #downloadBtn {
+            background: #FF9800;
+        }
+        #shareBtn {
+            background: #9C27B0;
+        }
+        .result-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #salesmanOptions {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+        .salesman-btn {
+            width: 200px;
+            margin: 5px;
+            background: #607D8B;
+        }
+        #fileInput {
+            display: none;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 400px;
+        }
+        .share-option-btn {
+            width: 100%;
+            margin: 5px 0;
+            padding: 10px;
+            background: #795548;
+        }
+        .main-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+            width: 100%;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: #333;
+        }
+        
+        #startBtn, #uploadBtn, #takeWithMeasurementBtn, #uploadWithMeasurementBtn {
+            min-width: 250px;
+            padding: 15px 30px;
+            font-size: 18px;
+            margin: 15px auto;
+            display: block;
+        }
+
+        /* Measurement Page Styles */
+        #measurementPage {
+            display: none;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .measurement-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .measurement-item {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        .measurement-item label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+        .measurement-item input {
+            width: 100%;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            -moz-appearance: textfield;
+        }
+        .measurement-item input::-webkit-outer-spin-button,
+        .measurement-item input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        #measurementNextBtn {
+            margin-top: 15px;
+            padding: 12px 24px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .pent-color-options {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            width: 100%;
+        }
+        .pent-color-title {
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .pent-color-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .pent-color-btn {
+            padding: 10px 15px;
+            background: #607D8B;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .pent-color-btn.active {
+            background: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Royal Sherwani Bill Capture</h2>
+
+<div class="main-buttons">
+    <button id="startBtn">Take Photo</button>
+    <button id="uploadBtn">Upload Photo</button>
+    <button id="takeWithMeasurementBtn">Take Photo With Measurement</button>
+    <button id="uploadWithMeasurementBtn">Upload Photo With Measurement</button>
+    <input type="file" id="fileInput" accept="image/*">
+</div>
+
+<!-- Measurement Page -->
+<div id="measurementPage">
+    <h3>Body Measurements (in inches)</h3>
+    <div class="measurement-container">
+        <div class="measurement-item">
+            <label>Pagdi Size</label>
+            <input type="number" id="pagdiSize" placeholder="0" min="0" step="0.5">
+        </div>
+        <div class="measurement-item">
+            <label>Neck</label>
+            <input type="number" id="neck" placeholder="0" min="0" step="0.5">
+        </div>
+        <div class="measurement-item">
+            <label>Shoulder</label>
+            <input type="number" id="shoulder" placeholder="0" min="0" step="0.5">
+        </div>
+        <div class="measurement-item">
+            <label>Chest</label>
+            <input type="number" id="chest" placeholder="0" min="0" step="0.5">
+        </div>
+        <div class="measurement-item">
+            <label>CrossBack</label>
+            <input type="number" id="crossBack" placeholder="0" min="0" step="0.5">
+        </div>
+        <div class="measurement-item">
+            <label>Tummy</label>
+            <input type="number" id="tummy" placeholder="0" min="0" step="0.5">
+        </div>
+        <div class="measurement-item">
+            <label>Sleeves</label>
+            <input type="number" id="sleeves" placeholder="0" min="0" step="0.5">
+        </div>
+        <div class="measurement-item">
+            <label>BM</label>
+            <input type="number" id="bm" placeholder="0" min="0" step="0.5">
+        </div>
+        <div class="measurement-item">
+            <label>BS</label>
+            <input type="number" id="bs" placeholder="0" min="0" step="0.5">
+        </div>
+        <div class="measurement-item">
+            <label>Length</label>
+            <input type="number" id="length" placeholder="0" min="0" step="0.5">
+        </div>
+        <div class="measurement-item">
+            <label>Waist</label>
+            <input type="number" id="waist" placeholder="0" min="0" step="0.5">
+        </div>
+        <div class="measurement-item">
+            <label>Hips</label>
+            <input type="number" id="hips" placeholder="0" min="0" step="0.5">
+        </div>
+        <div class="measurement-item">
+            <label>Thai</label>
+            <input type="number" id="thai" placeholder="0" min="0" step="0.5">
+        </div>
+        <div class="measurement-item">
+            <label>Asan</label>
+            <input type="number" id="asan" placeholder="0" min="0" step="0.5">
+        </div>
+        <div class="measurement-item">
+            <label>Ghutna</label>
+            <input type="number" id="ghutna" placeholder="0" min="0" step="0.5">
+        </div>
+        <div class="measurement-item">
+            <label>Pindli</label>
+            <input type="number" id="pindli" placeholder="0" min="0" step="0.5">
+        </div>
+        <div class="measurement-item">
+            <label>Bottom</label>
+            <input type="number" id="bottom" placeholder="0" min="0" step="0.5">
+        </div>
+        <div class="measurement-item">
+            <label>Lower Length</label>
+            <input type="number" id="lowerLength" placeholder="0" min="0" step="0.5">
+        </div>
+    </div>
+    
+    <div class="pent-color-options">
+        <div class="pent-color-title">Pent Color:</div>
+        <div class="pent-color-buttons">
+            <button class="pent-color-btn" data-color="White">White</button>
+            <button class="pent-color-btn" data-color="Black">Black</button>
+            <button class="pent-color-btn" data-color="Same As Outfit">Same As Outfit</button>
+        </div>
+    </div>
+    
+    <button id="measurementNextBtn">Next</button>
+</div>
+
+<div class="input-group">
+    <input type="text" id="billInput" placeholder="Enter Bill Number">
+    <input type="date" id="deliveryDate" placeholder="Delivery Date">
+    <button id="confirmDateBtn" style="display:none">Next</button>
+</div>
+
+<div id="salesmanOptions">
+    <h3>Select Salesman</h3>
+    <button class="salesman-btn" data-name="Subodh Kumar">Subodh Kumar</button>
+    <button class="salesman-btn" data-name="Sahil Qureshi">Sahil Qureshi</button>
+    <button class="salesman-btn" data-name="Mohd Affan">Mohd Affan</button>
+</div>
+
+<div id="cameraContainer">
+    <video id="cameraView" autoplay playsinline></video>
+</div>
+
+<div class="controls">
+    <button id="captureBtn" style="display:none">Capture Photo</button>
+    <button id="switchBtn" style="display:none">Switch Camera</button>
+</div>
+
+<!-- For Download -->
+<canvas id="photoResult"></canvas>
+<!-- For Sharing (hidden) -->
+<canvas id="sharePhotoResult" style="display:none"></canvas>
+
+<div class="controls result-buttons">
+    <button id="downloadBtn" style="display:none">Download</button>
+    <button id="shareBtn" style="display:none">Share</button>
+</div>
+
+<!-- Share Options Modal -->
+<div id="shareModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Select Date Adjustment</h3>
+        <button class="share-option-btn" data-days="0">No Changes</button>
+        <button class="share-option-btn" data-days="1">1 Day Earlier</button>
+        <button class="share-option-btn" data-days="2">2 Days Earlier</button>
+        <button class="share-option-btn" data-days="4">4 Days Earlier</button>
+        <button class="share-option-btn" data-days="6">6 Days Earlier</button>
+        <button class="share-option-btn" data-days="10">10 Days Earlier</button>
+        <button class="share-option-btn" data-days="15">15 Days Earlier</button>
+    </div>
+</div>
+
+<script>
+    // Elements
+    const startBtn = document.getElementById('startBtn');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const takeWithMeasurementBtn = document.getElementById('takeWithMeasurementBtn');
+    const uploadWithMeasurementBtn = document.getElementById('uploadWithMeasurementBtn');
+    const fileInput = document.getElementById('fileInput');
+    const billInput = document.getElementById('billInput');
+    const deliveryDate = document.getElementById('deliveryDate');
+    const confirmDateBtn = document.getElementById('confirmDateBtn');
+    const salesmanOptions = document.getElementById('salesmanOptions');
+    const cameraView = document.getElementById('cameraView');
+    const captureBtn = document.getElementById('captureBtn');
+    const switchBtn = document.getElementById('switchBtn');
+    const photoResult = document.getElementById('photoResult');
+    const sharePhotoResult = document.getElementById('sharePhotoResult');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const shareBtn = document.getElementById('shareBtn');
+    const shareModal = document.getElementById('shareModal');
+    const measurementPage = document.getElementById('measurementPage');
+    const measurementNextBtn = document.getElementById('measurementNextBtn');
+    const closeBtn = document.querySelector('.close');
+    
+    // State variables
+    let stream = null;
+    let currentFacingMode = "environment";
+    let billNumber = "";
+    let deliveryDateValue = "";
+    let salesmanName = "";
+    let daysToReduce = 0;
+    let uploadedImage = null;
+    let withMeasurement = false;
+    let measurements = {};
+    let pentColor = "";
+
+    // Initialize event listeners
+    function initEventListeners() {
+        // Main buttons
+        startBtn.addEventListener('click', startProcess);
+        uploadBtn.addEventListener('click', function() { fileInput.click(); });
+        takeWithMeasurementBtn.addEventListener('click', takeWithMeasurementProcess);
+        uploadWithMeasurementBtn.addEventListener('click', uploadWithMeasurementProcess);
+        
+        // File input
+        fileInput.addEventListener('change', handleFileUpload);
+        
+        // Measurement flow
+        measurementNextBtn.addEventListener('click', measurementNextProcess);
+        
+        // Bill and date flow
+        confirmDateBtn.addEventListener('click', confirmBillAndDate);
+        
+        // Salesman selection
+        document.querySelectorAll('.salesman-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                selectSalesman(this);
+            });
+        });
+        
+        // Pent color selection
+        document.querySelectorAll('.pent-color-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.pent-color-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                this.classList.add('active');
+                pentColor = this.getAttribute('data-color');
+            });
+        });
+        
+        // Camera controls
+        captureBtn.addEventListener('click', capturePhoto);
+        switchBtn.addEventListener('click', switchCamera);
+        
+        // Result buttons
+        downloadBtn.addEventListener('click', downloadPhoto);
+        shareBtn.addEventListener('click', function() { shareModal.style.display = 'block'; });
+        
+        // Share options
+        document.querySelectorAll('.share-option-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                selectShareOption(this);
+            });
+        });
+        
+        // Close modal
+        closeBtn.addEventListener('click', function() {
+            shareModal.style.display = 'none';
+        });
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', initEventListeners);
+
+    // Start Process (regular photo)
+    function startProcess() {
+        resetState();
+        hideMainButtons();
+        showBillInput();
+    }
+
+    // Take Photo With Measurement
+    function takeWithMeasurementProcess() {
+        resetState();
+        withMeasurement = true;
+        hideMainButtons();
+        measurementPage.style.display = 'block';
+    }
+
+    // Upload Photo With Measurement
+    function uploadWithMeasurementProcess() {
+        resetState();
+        withMeasurement = true;
+        hideMainButtons();
+        fileInput.click();
+    }
+
+    // Handle file upload
+    function handleFileUpload(e) {
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                uploadedImage = new Image();
+                uploadedImage.onload = function() {
+                    if (withMeasurement) {
+                        measurementPage.style.display = 'block';
+                    } else {
+                        hideMainButtons();
+                        showBillInput();
+                    }
+                };
+                uploadedImage.src = event.target.result;
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    }
+
+    // Measurement Next Button
+    function measurementNextProcess() {
+        collectMeasurements();
+        measurementPage.style.display = 'none';
+        showBillInput();
+    }
+
+    // Show bill input fields
+    function showBillInput() {
+        billInput.style.display = 'inline-block';
+        deliveryDate.style.display = 'inline-block';
+        confirmDateBtn.style.display = 'inline-block';
+        billInput.focus();
+        
+        // Set default delivery date to today + 7 days
+        const today = new Date();
+        const nextWeek = new Date(today);
+        nextWeek.setDate(today.getDate() + 7);
+        deliveryDate.valueAsDate = nextWeek;
+    }
+
+    // Confirm Bill Number and Date
+    function confirmBillAndDate() {
+        billNumber = billInput.value.trim();
+        deliveryDateValue = deliveryDate.value;
+        
+        if(!billNumber) {
+            alert("Please enter bill number");
+            return;
+        }
+        if(!deliveryDateValue) {
+            alert("Please select delivery date");
+            return;
+        }
+        
+        billInput.style.display = 'none';
+        deliveryDate.style.display = 'none';
+        confirmDateBtn.style.display = 'none';
+        salesmanOptions.style.display = 'flex';
+    }
+
+    // Salesman Selection
+    function selectSalesman(btn) {
+        salesmanName = btn.getAttribute('data-name');
+        salesmanOptions.style.display = 'none';
+        
+        if (uploadedImage) {
+            processUploadedImage();
+        } else {
+            startCamera();
+        }
+    }
+
+    // Start Camera
+    function startCamera() {
+        if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            alert("Camera access not supported in your browser");
+            return;
+        }
+
+        navigator.mediaDevices.getUserMedia({
+            video: { 
+                facingMode: currentFacingMode,
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            },
+            audio: false
+        }).then(function(s) {
+            stream = s;
+            cameraView.srcObject = stream;
+            cameraView.style.display = 'block';
+            captureBtn.style.display = 'inline-block';
+            switchBtn.style.display = 'inline-block';
+        }).catch(function(err) {
+            alert("Could not access camera: " + err);
+            resetApp();
+        });
+    }
+
+    // Switch Camera
+    function switchCamera() {
+        currentFacingMode = currentFacingMode === "user" ? "environment" : "user";
+        if(stream) stream.getTracks().forEach(track => track.stop());
+        startCamera();
+    }
+
+    // Process Uploaded Image
+    function processUploadedImage() {
+        const originalDeliveryDate = formatDate(deliveryDateValue);
+        createPhoto(photoResult, originalDeliveryDate, uploadedImage);
+        createPhoto(sharePhotoResult, originalDeliveryDate, uploadedImage);
+        
+        photoResult.style.display = 'block';
+        downloadBtn.style.display = 'inline-block';
+        shareBtn.style.display = 'inline-block';
+        photoResult.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Format date as DD-MM-YYYY
+    function formatDate(date) {
+        const d = new Date(date);
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}-${month}-${year}`;
+    }
+
+    // Create photo with specified delivery date
+    function createPhoto(canvasElement, deliveryDateToShow, imageSource) {
+        const targetWidth = Math.min(500, window.innerWidth - 40);
+        const targetHeight = imageSource ? (targetWidth * (imageSource.height / imageSource.width)) : (targetWidth * (cameraView.videoHeight / cameraView.videoWidth));
+        
+        canvasElement.width = targetWidth;
+        canvasElement.height = targetHeight;
+        
+        const ctx = canvasElement.getContext('2d');
+        
+        if (imageSource) {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+            const ratio = Math.min(
+                canvasElement.width / imageSource.width,
+                canvasElement.height / imageSource.height
+            );
+            const x = (canvasElement.width - imageSource.width * ratio) / 2;
+            const y = (canvasElement.height - imageSource.height * ratio) / 2;
+            ctx.drawImage(imageSource, x, y, imageSource.width * ratio, imageSource.height * ratio);
+        } else {
+            ctx.drawImage(cameraView, 0, 0, canvasElement.width, canvasElement.height);
+        }
+        
+        // Add text elements to photo
+        addTextElements(ctx, canvasElement, deliveryDateToShow);
+    }
+
+    function addTextElements(ctx, canvasElement, deliveryDateToShow) {
+        const leftMargin = canvasElement.width * 0.10;
+        const rightMargin = canvasElement.width * 0.85;
+        const salesmanMargin = canvasElement.width * 0.25;
+        const bottomMargin = canvasElement.height * 0.70;
+        const now = new Date();
+        
+        // Royal Sherwani stamp
+        ctx.font = "bold 30px Arial";
+        ctx.fillStyle = "gold";
+        ctx.textAlign = "left";
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 2;
+        ctx.strokeText("ROYAL SHERWANI", leftMargin, 40);
+        ctx.fillText("ROYAL SHERWANI", leftMargin, 40);
+        
+        // Salesman name
+        ctx.font = "bold 26px Arial";
+        ctx.fillStyle = "white";
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 1;
+        ctx.strokeText(salesmanName, salesmanMargin, 80);
+        ctx.fillText(salesmanName, salesmanMargin, 80);
+        
+        // Bill number
+        ctx.font = "bold 70px Arial";
+        ctx.fillStyle = "red";
+        ctx.textAlign = "center";
+        ctx.strokeStyle = "white";
+        ctx.lineWidth = 4;
+        ctx.strokeText(billNumber, canvasElement.width/2, canvasElement.height/2);
+        ctx.fillText(billNumber, canvasElement.width/2, canvasElement.height/2);
+        
+        // Current date
+        ctx.font = "bold 22px Arial";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "right";
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 1;
+        ctx.strokeText(formatDate(now), rightMargin, 40);
+        ctx.fillText(formatDate(now), rightMargin, 40);
+        
+        // Delivery date
+        ctx.font = "bold 26px Arial";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "right";
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 2;
+        ctx.strokeText(deliveryDateToShow, rightMargin, bottomMargin);
+        ctx.fillText(deliveryDateToShow, rightMargin, bottomMargin);
+        
+        // Measurements
+        if (withMeasurement) {
+            addMeasurements(ctx, leftMargin);
+        }
+    }
+
+    function addMeasurements(ctx, leftMargin) {
+        ctx.font = "bold 14px Arial";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "left";
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 1;
+        
+        let yPosition = 120;
+        const lineHeight = 20;
+        
+        const measurementTexts = [
+            `Pagdi: ${measurements.pagdiSize}"`,
+            `Neck: ${measurements.neck}"`,
+            `Shoulder: ${measurements.shoulder}"`,
+            `Chest: ${measurements.chest}"`,
+            `CrossBack: ${measurements.crossBack}"`,
+            `Tummy: ${measurements.tummy}"`,
+            `Sleeves: ${measurements.sleeves}"`,
+            `BM: ${measurements.bm}"`,
+            `BS: ${measurements.bs}"`,
+            `Length: ${measurements.length}"`,
+            `Waist: ${measurements.waist}"`,
+            `Hips: ${measurements.hips}"`,
+            `Thai: ${measurements.thai}"`,
+            `Asan: ${measurements.asan}"`,
+            `Ghutna: ${measurements.ghutna}"`,
+            `Pindli: ${measurements.pindli}"`,
+            `Bottom: ${measurements.bottom}"`,
+            `Lower Length: ${measurements.lowerLength}"`,
+            `Pent Color: ${pentColor}`
+        ];
+        
+        measurementTexts.forEach(text => {
+            ctx.fillText(text, leftMargin, yPosition);
+            yPosition += lineHeight;
+        });
+    }
+
+    // Capture Photo
+    function capturePhoto() {
+        const originalDeliveryDate = formatDate(deliveryDateValue);
+        createPhoto(photoResult, originalDeliveryDate);
+        createPhoto(sharePhotoResult, originalDeliveryDate);
+        
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+        
+        cameraView.style.display = 'none';
+        captureBtn.style.display = 'none';
+        switchBtn.style.display = 'none';
+        photoResult.style.display = 'block';
+        downloadBtn.style.display = 'inline-block';
+        shareBtn.style.display = 'inline-block';
+        photoResult.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Download Photo
+    function downloadPhoto() {
+        const link = document.createElement('a');
+        link.download = 'RoyalSherwani_Bill_' + billNumber + '.png';
+        link.href = photoResult.toDataURL('image/png');
+        link.click();
+    }
+
+    // Select Share Option
+    function selectShareOption(btn) {
+        daysToReduce = parseInt(btn.getAttribute('data-days'));
+        const shareDeliveryDate = new Date(deliveryDateValue);
+        shareDeliveryDate.setDate(shareDeliveryDate.getDate() - daysToReduce);
+        createPhoto(sharePhotoResult, formatDate(shareDeliveryDate), uploadedImage || null);
+        shareModal.style.display = 'none';
+        sharePhoto();
+    }
+
+    // Share Photo
+    function sharePhoto() {
+        try {
+            sharePhotoResult.toBlob(async (blob) => {
+                const file = new File([blob], `RoyalSherwani_Bill_${billNumber}.png`, { type: 'image/png' });
+                
+                if (navigator.share && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            files: [file],
+                            title: 'Royal Sherwani Bill',
+                            text: `Bill No: ${billNumber}\nSalesman: ${salesmanName}\nDelivery Date: ${formatDate(new Date(deliveryDateValue).setDate(new Date(deliveryDateValue).getDate() - daysToReduce))}`
+                        });
+                    } catch (err) {
+                        fallbackShare();
+                    }
+                } else {
+                    fallbackShare();
+                }
+            }, 'image/png');
+        } catch (err) {
+            fallbackShare();
+        }
+    }
+
+    function fallbackShare() {
+        const dataUrl = sharePhotoResult.toDataURL('image/png');
+        prompt("Copy this link to share:", dataUrl);
+    }
+
+    function collectMeasurements() {
+        measurements = {
+            pagdiSize: document.getElementById('pagdiSize').value,
+            neck: document.getElementById('neck').value,
+            shoulder: document.getElementById('shoulder').value,
+            chest: document.getElementById('chest').value,
+            crossBack: document.getElementById('crossBack').value,
+            tummy: document.getElementById('tummy').value,
+            sleeves: document.getElementById('sleeves').value,
+            bm: document.getElementById('bm').value,
+            bs: document.getElementById('bs').value,
+            length: document.getElementById('length').value,
+            waist: document.getElementById('waist').value,
+            hips: document.getElementById('hips').value,
+            thai: document.getElementById('thai').value,
+            asan: document.getElementById('asan').value,
+            ghutna: document.getElementById('ghutna').value,
+            pindli: document.getElementById('pindli').value,
+            bottom: document.getElementById('bottom').value,
+            lowerLength: document.getElementById('lowerLength').value
+        };
+    }
+
+    function hideMainButtons() {
+        startBtn.style.display = 'none';
+        uploadBtn.style.display = 'none';
+        takeWithMeasurementBtn.style.display = 'none';
+        uploadWithMeasurementBtn.style.display = 'none';
+    }
+
+    function resetState() {
+        billInput.value = "";
+        deliveryDate.value = "";
+        salesmanName = "";
+        uploadedImage = null;
+        daysToReduce = 0;
+        withMeasurement = false;
+        measurements = {};
+        pentColor = "";
+        
+        // Reset pent color buttons
+        document.querySelectorAll('.pent-color-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+    }
+
+    function resetApp() {
+        startBtn.style.display = 'inline-block';
+        uploadBtn.style.display = 'inline-block';
+        takeWithMeasurementBtn.style.display = 'inline-block';
+        uploadWithMeasurementBtn.style.display = 'inline-block';
+        billInput.style.display = 'none';
+        deliveryDate.style.display = 'none';
+        confirmDateBtn.style.display = 'none';
+        salesmanOptions.style.display = 'none';
+        cameraView.style.display = 'none';
+        captureBtn.style.display = 'none';
+        switchBtn.style.display = 'none';
+        photoResult.style.display = 'none';
+        sharePhotoResult.style.display = 'none';
+        downloadBtn.style.display = 'none';
+        shareBtn.style.display = 'none';
+        shareModal.style.display = 'none';
+        measurementPage.style.display = 'none';
+        
+        resetState();
+        
+        document.querySelectorAll('#measurementPage input').forEach(input => {
+            input.value = '';
+        });
+        
+        if(stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+        }
+    }
+</script>
+</body>
+</html>
