@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Royal Sherwani</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Cloud Status -->
+  <div id="cloud-status">
+    <span id="status-light" class="red" title="Cloud: not connected"></span>
+    <span id="settings" onclick="requestPassword()" title="Settings">⚙️</span>
+  </div>
+
+  <!-- Password Popup -->
+  <div id="password-popup" class="hidden">
+    <div class="popup-content">
+      <h2>Settings Password</h2>
+      <p id="password-message"></p>
+      <input type="password" id="passwordInput" placeholder="Enter password"/>
+      <div>
+        <button onclick="submitPassword()">Submit</button>
+        <button onclick="closePasswordPopup()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Token Popup -->
+  <div id="token-popup" class="hidden">
+    <div class="popup-content">
+      <h2>Cloud Token (Dropbox)</h2>
+      <input id="tokenInput" type="text" placeholder="Paste token here"/>
+      <div>
+        <button onclick="saveToken()">Save</button>
+        <button onclick="closeTokenPopup()">Close</button>
+        <button onclick="clearToken()" style="background:#666">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Page -->
+  <div id="mainPage" class="page">
+    <h1 class="title">Royal Sherwani</h1>
+    <div class="button-group">
+      <button onclick="startTakePhoto()">📸 Take Photo</button>
+      <button onclick="startMeasurementPhoto()">📏 Photo with Measurement</button>
+    </div>
+  </div>
+
+  <!-- Numeric Code Input -->
+  <div id="codePage" class="page hidden">
+    <h2>Enter Code</h2>
+    <input type="number" id="numericCode" placeholder="Enter numeric code">
+    <div class="button-group">
+      <button onclick="submitCode()">Submit</button>
+      <button class="home-btn" onclick="goHome()">🏠 Home</button>
+    </div>
+  </div>
+
+  <!-- Measurement Code Input -->
+  <div id="measurementCodePage" class="page hidden">
+    <h2>Enter Code & Delivery Date</h2>
+    <input type="number" id="measurementCode" placeholder="Enter numeric code">
+    <input type="date" id="deliveryDate">
+    <div class="button-group">
+      <button onclick="submitMeasurementCode()">Submit</button>
+      <button class="home-btn" onclick="goHome()">🏠 Home</button>
+    </div>
+  </div>
+
+  <!-- Camera Page -->
+  <div id="cameraPage" class="page hidden">
+    <video id="camera" autoplay playsinline></video>
+    <div class="camera-controls">
+      <button onclick="capturePhoto()">📸 Capture</button>
+      <button onclick="switchCamera()">🔄 Switch</button>
+    </div>
+    <button class="home-btn" onclick="goHome()">🏠 Home</button>
+  </div>
+
+  <!-- Preview Page (Take Photo) -->
+  <div id="previewPage" class="page hidden">
+    <h2>Preview Photos</h2>
+    <div id="photoPreview" class="photo-grid"></div>
+    <div class="button-group">
+      <button onclick="addAnotherPhoto()">Add Photo</button>
+      <button onclick="downloadPhotos()">Download</button>
+      <button onclick="uploadPhotos()">CloudUpload</button>
+      <button onclick="uploadDownloadPhotos()">UploadDownload</button>
+    </div>
+    <button class="home-btn" onclick="goHome()">🏠 Home</button>
+  </div>
+
+  <!-- Measurement Preview Page -->
+  <div id="measurementPreviewPage" class="page hidden">
+    <h2>Preview Measurement Photo</h2>
+    <div id="measurementPreview"></div>
+    <div class="button-group">
+      <button onclick="downloadMeasurementPhoto()">Download</button>
+      <button onclick="uploadMeasurementPhoto()">CloudUpload</button>
+      <button onclick="uploadDownloadMeasurement()">UploadDownload</button>
+    </div>
+    <button class="home-btn" onclick="goHome()">🏠 Home</button>
+  </div>
+
+  <!-- Processing canvas & toast -->
+  <canvas id="canvas" class="hidden"></canvas>
+  <div id="status-log" class="hidden" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
