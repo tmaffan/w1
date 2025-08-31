@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Royal Sherwani</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Main Page -->
+  <div id="mainPage" class="page">
+    <h1 class="title">Royal Sherwani</h1>
+    <div class="button-group">
+      <button onclick="startTakePhoto()">📸 Take Photo</button>
+      <button onclick="startMeasurementPhoto()">📏 Photo with Measurement</button>
+    </div>
+  </div>
+
+  <!-- Numeric Code Input -->
+  <div id="codePage" class="page hidden">
+    <h2>Enter Code</h2>
+    <input type="number" id="numericCode" placeholder="Enter numeric code">
+    <div class="button-group">
+      <button onclick="submitCode()">Submit</button>
+      <button class="home-btn" onclick="goHome()">🏠 Home</button>
+    </div>
+  </div>
+
+  <!-- Measurement Code Input -->
+  <div id="measurementCodePage" class="page hidden">
+    <h2>Enter Code & Delivery Date</h2>
+    <input type="number" id="measurementCode" placeholder="Enter numeric code">
+    <input type="date" id="deliveryDate">
+    <div class="button-group">
+      <button onclick="submitMeasurementCode()">Submit</button>
+      <button class="home-btn" onclick="goHome()">🏠 Home</button>
+    </div>
+  </div>
+
+  <!-- Camera Page -->
+  <div id="cameraPage" class="page hidden">
+    <video id="camera" autoplay playsinline></video>
+    <div class="camera-controls">
+      <button onclick="capturePhoto()">📸 Capture</button>
+      <button onclick="switchCamera()">🔄 Switch</button>
+    </div>
+    <button class="home-btn" onclick="goHome()">🏠 Home</button>
+  </div>
+
+  <!-- Preview Page (Take Photo) -->
+  <div id="previewPage" class="page hidden">
+    <h2>Preview Photos</h2>
+    <div id="photoPreview" class="photo-grid"></div>
+    <div class="button-group">
+      <button onclick="addAnotherPhoto()">Add Photo</button>
+      <button onclick="downloadPhotos()">Download</button>
+    </div>
+    <button class="home-btn" onclick="goHome()">🏠 Home</button>
+  </div>
+
+  <!-- Measurement Preview Page -->
+  <div id="measurementPreviewPage" class="page hidden">
+    <h2>Preview Measurement Photo</h2>
+    <div id="measurementPreview"></div>
+    <div class="button-group">
+      <button onclick="downloadMeasurementPhoto()">Download</button>
+    </div>
+    <button class="home-btn" onclick="goHome()">🏠 Home</button>
+  </div>
+
+  <canvas id="canvas" class="hidden"></canvas>
+  <div id="status-log" class="hidden" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
